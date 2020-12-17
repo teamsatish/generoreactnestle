@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Formik } from 'formik';
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
@@ -8,21 +8,38 @@ import PaymentMethodFormComponent from "./PaymentMethodFormComponent";
 import { setDeliveryAddress } from "../../../store/appStore/payment";
 import { store } from "../../../store/store";
 import { getCartIdSelector, getPaymentConfigSelector } from '../../../store/selectors';
-import { defaultPaymentMethod } from './defaultValues';
+import { defaultPaymentMethod } from "./defaultValues";
 
 function PaymentForm({ disablePaymentMethodForm, paymentConfig, cartId }) {
+  const [initialValues, setInitialValues] = useState({
+    paymentMethod: '選択してください', deliveryDate: null, deliveryTime: '-1'
+  });
+
   const { paymentMethods, deliveryTime: deliveryTimeOptions, deliveryDate: deliveryDates, deliveryType, } = paymentConfig;
 
   const [setPaymentMethodMutation, { loading: mutationLoading, error: mutationError }] = useMutation(MagentoMutations.POST_PAYMENT_METHOD, {
     onCompleted: (data) => {
     }
   });
+
+  useEffect(() => {
+    setInitialValues((initialValues) => ({ ...initialValues, paymentMethod: paymentConfig['paymentMethods'][0].title }))
+  }, [paymentConfig]);
+
+
   const history = useHistory();
   function PaymentFormComponentWraper(formikProps) {
     return <PaymentMethodFormComponent {...formikProps} paymentMethods={paymentMethods} disablePaymentMethodForm={disablePaymentMethodForm} deliveryDates={deliveryDates} deliveryTimeOptions={deliveryTimeOptions} />
   }
 
   function handleSubmit(values, actions) {
+
+    console.log(values);
+
+    console.log(paymentMethods);
+    debugger;
+    return;
+
 
     const paymentMethodMap = new Map([
       defaultPaymentMethod,
@@ -77,9 +94,8 @@ function PaymentForm({ disablePaymentMethodForm, paymentConfig, cartId }) {
   }
 
   return <Formik
-    initialValues={{
-      paymentMethod: '選択してください', deliveryDate: null, deliveryTime: '-1'
-    }} // TODO: change it
+    initialValues={initialValues} // TODO: change it
+    enableReinitialize
     onSubmit={handleSubmit}
     component={PaymentFormComponentWraper} >
   </Formik>

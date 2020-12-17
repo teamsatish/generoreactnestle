@@ -25,7 +25,6 @@ class CartService {
 
 
         store.dispatch(setCartData(cartDataResponse.getCart));
-        debugger
         const billingAddress = cartDataResponse.getCart.billing_address;
         AddressService.setPaymentMethodConfigs(cartDataResponse.getCart);
         if (billingAddress) {

@@ -140,7 +140,6 @@ function NhsForm({ cartId, billingAddress }) {
           if (userStatus.includes(emailResponse.sendEmailVerification.type)) {
             setRegistrationValue(register);
             setShowFillOtpForm(true);
-            setIsAddressButtonDisabled(true);
           }
         });
     });
@@ -172,6 +171,7 @@ function NhsForm({ cartId, billingAddress }) {
   }, [isLoggedIn(), showShippingForm]);
 
   async function onVerificationSuccess(formValue) {
+    setIsAddressButtonDisabled(true);
     await saveAddress(formValue);
     setShowFillOtpForm(false);
     setShowThanksModal(true);

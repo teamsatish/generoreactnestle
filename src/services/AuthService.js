@@ -58,7 +58,6 @@ class AuthService {
 
   isDrupalSessionSet() {
     console.log(appConfig, appConfig.isLocalDevelopment);
-    // debugger;
     return appConfig.isLocalDevelopment ? true : Cookies.get("MemberCode") > 0;
   }
 
